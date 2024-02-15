@@ -9,7 +9,12 @@ import morgan from 'morgan';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { register } from './controllers/auth.js';
+
+import userRoutes from './routes/users.js';
+import postRoutes from './routes/posts.js';
+import authRoutes from './routes/auth.js';
 import UserModel from './models/UserModel.js';
+import { verifyToken } from './middleware/auth.js';
 
 // CONFIGURATION
 const __filename = fileURLToPath(import.meta.url);
@@ -39,12 +44,12 @@ const upload = multer({ storage });
 
 //ROUTES WITH FILES
 app.post('/auth/register', upload.single('picture'), register);
-app.post('/post', upload.single('picture'));
+app.post('/post', verifyToken, upload.single('picture'));
 
-
-app.get('/', (req, res) => {
-    res.json({ ninayentonce: "Pa donde vas tu" });
-});
+//ROUTES
+app.use('/auth', authRoutes);
+app.use('/users', userRoutes);
+app.use('/posts', postRoutes);
 
 //MONGOOSE SETUP
 const PORT = process.env.PORT || 6001;
