@@ -15,7 +15,7 @@ export const register = async (req, res) => {
             occupation
         } = req.body;
 
-        if (UserModel.findOne({ email: email })) {
+        if (await UserModel.findOne({ email: email })) {
             return res.status(401).json({ message: 'Email already taken' });
         }
 
